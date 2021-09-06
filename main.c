@@ -50,8 +50,13 @@ int pour (struct WaterJug source, struct WaterJug dest) {
 #endif
 
 //to declare as a pointer use *
-void pour (WaterJug *source, WaterJug *dest) { //TODO needs to check for overpour - e.g. 5 into 3 should have 2 left
+void pour (WaterJug *source, WaterJug *dest) {
     //*dest += *source; //de-reference
+    if(source > dest) {
+        int amountTransf = dest -> capacity - dest -> fullness;
+        dest -> fullness = dest -> capacity;
+        source -> fullness = amountTransf;
+    }
     dest ->fullness += source ->fullness; //-> pointer operator
     source -> fullness = 0;
 
