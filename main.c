@@ -6,18 +6,123 @@ typedef struct WaterJug {
     int fullness;
 }WaterJug;
 
+typedef struct ListElement {
+    struct ListElement *next; //is null default here?
+    WaterJug *waterJug;
+}ListElement;
+
+struct ListElement *head = NULL;
+
+void addHead(struct ListElement obj) {
+    if(head == NULL) {
+        *head = obj;
+    } else {
+        ListElement h;
+        h .waterJug = obj .waterJug;
+        h . next = head;
+    }
+}
+
+void addTail(struct ListElement obj) {
+    if(head == NULL) {
+        *head = obj;
+    } else {
+        struct ListElement *thing;
+        *thing = *head;
+        while (thing ->next != NULL) {
+            *thing = *thing ->next;
+        }
+        *thing -> next = obj;
+    }
+}
+
+/* global variable declaration */
+WaterJug smallWJ;
+WaterJug largeWJ;
+
+//here passing by value - should pass by reference (difference between reference and pointers)
+#if 0
+int pour (struct WaterJug source, struct WaterJug dest) {
+    dest += source;
+    source = 0;
+    return 3;
+}
+#endif
+
+//to declare as a pointer use *
+void pour (WaterJug *source, WaterJug *dest) { //TODO needs to check for overpour - e.g. 5 into 3 should have 2 left
+    //*dest += *source; //de-reference
+    dest ->fullness += source ->fullness; //-> pointer operator
+    source -> fullness = 0;
+
+}
+
+void fill(WaterJug *jug) {
+    jug -> fullness = jug -> capacity;
+}
+
+void empty(WaterJug *jug) {
+    jug -> fullness = 0;
+}
+
+//OO - the compiler is passing the references (inferring the 'this' pointer)
+//need to know when passing value and when passing a pointer
+
+void add_a(int a) {
+    a++;
+    printf("%i\n", a); //copy
+}
+//preferably pass by reference (less overhead but can have side effects)
+//essentially never pass by copy
+//func programming - no side effects. c non func programming
+//pointer - literally an address
+//if you point to something random..your program will crash
+//OOO languages obfuscate all of these
+
+void add_b(int *b) {
+    *b = *b+1;
+}
+
 int main(void){
-    printf("%d", returnSeven());
-    WaterJug smallWJ;
-    WaterJug largeWJ;
+
+    struct ListElement testElement;
+    testElement .next = NULL;
+    testElement .waterJug = NULL;
+
+    printf("%s\n", testElement .next);
+    printf("%s\n", testElement .waterJug);
+    addTail(testElement);
+    printf("%s\n", testElement .next);
+    printf("%s\n", testElement .waterJug);
+    addHead(testElement);
+    printf("%s\n", testElement .next);
+    printf("%s\n", testElement .waterJug);
+
+
+    return 0;
+
+/*  int a = 5;
+    add_a(a);
+    printf("%i\n", a);
+    add_b(&a);
+    printf("%i\n", a);
+    printf("%i %i %i\n", sizeof(a), sizeof(&a), sizeof(WaterJug));
+    //4, 4, 8 = Waterjug is so big because it is two ints. we also have to *return* it as a copy
+
 
     smallWJ.capacity = 3;
-    smallWJ.fullness = 0;
+    smallWJ.fullness = 3;
 
     largeWJ.capacity = 5;
     largeWJ.fullness = 0;
 
-    pour(smallWJ.fullness, largeWJ.fullness);
+    printf("%i\n", smallWJ.fullness);
+    printf("%i\n", largeWJ.fullness);
 
-    return 0;
+    pour(&smallWJ, &largeWJ); //&take the address of this object - the address is a pointer
+
+    printf("%i\n", smallWJ.fullness);
+    printf("%i\n", largeWJ.fullness);
+
+    return 0;*/
 }
