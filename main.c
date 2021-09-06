@@ -52,14 +52,14 @@ int pour (struct WaterJug source, struct WaterJug dest) {
 //to declare as a pointer use *
 void pour (WaterJug *source, WaterJug *dest) {
     //*dest += *source; //de-reference
-    if(source > dest) {
+    if(source->fullness > dest->fullness) {
         int amountTransf = dest -> capacity - dest -> fullness;
         dest -> fullness = dest -> capacity;
-        source -> fullness = amountTransf;
+        source -> fullness = source -> fullness - amountTransf;
+    } else {
+        dest ->fullness += source ->fullness; //-> pointer operator
+        source -> fullness = 0;
     }
-    dest ->fullness += source ->fullness; //-> pointer operator
-    source -> fullness = 0;
-
 }
 
 void fill(WaterJug *jug) {
@@ -94,17 +94,17 @@ int main(void){
     testElement .next = NULL;
     testElement .waterJug = NULL;
 
-    printf("%s\n", testElement .next);
+/*    printf("%s\n", testElement .next);
     printf("%s\n", testElement .waterJug);
     addTail(testElement);
     printf("%s\n", testElement .next);
     printf("%s\n", testElement .waterJug);
     addHead(testElement);
     printf("%s\n", testElement .next);
-    printf("%s\n", testElement .waterJug);
+    printf("%s\n", testElement .waterJug);*/
 
 
-    return 0;
+    //return 0;
 
 /*  int a = 5;
     add_a(a);
@@ -113,21 +113,22 @@ int main(void){
     printf("%i\n", a);
     printf("%i %i %i\n", sizeof(a), sizeof(&a), sizeof(WaterJug));
     //4, 4, 8 = Waterjug is so big because it is two ints. we also have to *return* it as a copy
-
+*/
 
     smallWJ.capacity = 3;
-    smallWJ.fullness = 3;
+    smallWJ.fullness = 0;
 
     largeWJ.capacity = 5;
-    largeWJ.fullness = 0;
+    largeWJ.fullness = 5;
 
-    printf("%i\n", smallWJ.fullness);
     printf("%i\n", largeWJ.fullness);
-
-    pour(&smallWJ, &largeWJ); //&take the address of this object - the address is a pointer
-
     printf("%i\n", smallWJ.fullness);
-    printf("%i\n", largeWJ.fullness);
 
-    return 0;*/
+
+    pour(&largeWJ, &smallWJ); //&take the address of this object - the address is a pointer
+
+    printf("%i\n", largeWJ.fullness);
+    printf("%i\n", smallWJ.fullness);
+
+    return 0;
 }
