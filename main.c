@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "header.h"
 
 typedef struct WaterJug {
@@ -6,20 +7,42 @@ typedef struct WaterJug {
     int fullness;
 }WaterJug;
 
-typedef struct ListElement {
+typedef struct ListElement { //typedef - define a type
     struct ListElement *next; //is null default here?
-    WaterJug *waterJug;
-}ListElement;
+    WaterJug *waterJugL;
+    WaterJug *waterJugS;
+}ListElement; //listelement exists now
 
-struct ListElement *head = NULL;
+ListElement *head = NULL; //global pointer var on heap - pointers are variables, on stack, but they point to an address on heap.
 
-void addHead(struct ListElement obj) {
+ListElement* newListElement(WaterJug *waterJug1, WaterJug *waterJug2) { //allocates mem for a List Element, which contains a WJ pointer
+    ListElement *h = malloc(sizeof (struct ListElement));
+    h -> next = NULL;
+    h -> waterJugL = waterJug1;
+    h -> waterJugS = waterJug2;
+    return h;
+}
+
+WaterJug *newWaterJug(int cap, int full) {
+    WaterJug *newWaterJug = malloc(sizeof (WaterJug)); //have to dec as pointer
+    newWaterJug ->fullness = full;
+    newWaterJug -> capacity = cap;
+    return newWaterJug;
+}
+
+void addHead(struct ListElement *obj) { //takes pointer
     if(head == NULL) {
-        *head = obj;
+        head = obj;
     } else {
-        ListElement h;
+        obj -> next = head; //address of new first element 'next' linking to address of old first element (the old head)
+        head = obj; //setting new head to be the obj passed in
+        /*
+         ListElement *h = malloc(sizeof (struct ListElement)); //variables are on the stack- need a heap variable.
+         Pointers referring to heap - there forever until you decide! managed by garbage collection.
+        //pointers are just numbers - the important part is the address. and it will give the type.
+
         h .waterJug = obj .waterJug;
-        h . next = head;
+        h . next = head;*/
     }
 }
 
@@ -50,7 +73,7 @@ int pour (struct WaterJug source, struct WaterJug dest) {
 #endif
 
 //to declare as a pointer use *
-void pour (WaterJug *source, WaterJug *dest) {
+ListElement* pour(ListElement *listElement, WaterJug *source, WaterJug *dest) {
     //*dest += *source; //de-reference
     if(source->fullness > dest->fullness) {
         int amountTransf = dest -> capacity - dest -> fullness;
@@ -60,14 +83,38 @@ void pour (WaterJug *source, WaterJug *dest) {
         dest ->fullness += source ->fullness; //-> pointer operator
         source -> fullness = 0;
     }
+    if (source ->capacity = listElement -> waterJugS) {
+       listElement -> waterJugS = source;
+       listElement -> waterJugL = dest;
+    } else {
+        listElement -> waterJugS = dest;
+        listElement -> waterJugL = source;
+    }
+    return listElement;
 }
 
-void fill(WaterJug *jug) {
-    jug -> fullness = jug -> capacity;
+ListElement* fillLarge(ListElement *listElement) {
+    int capacityLarge;
+    capacityLarge = listElement -> waterJugL -> capacity;
+    listElement -> waterJugL -> fullness = capacityLarge;
+    return listElement;
 }
 
-void empty(WaterJug *jug) {
-    jug -> fullness = 0;
+ListElement* fillSmall(ListElement *listElement) {
+    int capacitySmall;
+    capacitySmall = listElement -> waterJugS -> capacity;
+    listElement -> waterJugS -> fullness = capacitySmall;
+    return listElement;
+}
+
+ListElement* emptyLarge(ListElement *listElement) {
+    listElement -> waterJugL -> fullness = 0;
+    return listElement;
+}
+
+ListElement* emptySmall(ListElement *listElement) {
+    listElement -> waterJugS -> fullness = 0;
+    return listElement;
 }
 
 //OO - the compiler is passing the references (inferring the 'this' pointer)
@@ -88,23 +135,39 @@ void add_b(int *b) {
     *b = *b+1;
 }
 
+
+
 int main(void){
+    WaterJug smallJ;
+    WaterJug largeJ;
+    smallJ.fullness = 0;
+    largeJ.fullness = 0;
+    smallJ.capacity = 3;
+    largeJ.capacity = 5;
+    //ListElement testElement(*smallJ, *largeJ);
+/*  testElement.waterJugL->fullness = 0;
+    testElement.waterJugL->capacity = 5;
 
-    struct ListElement testElement;
-    testElement .next = NULL;
-    testElement .waterJug = NULL;
+    testElement.waterJugS->fullness = 0;
+    testElement.waterJugS->capacity = 3;*/
 
-/*    printf("%s\n", testElement .next);
-    printf("%s\n", testElement .waterJug);
-    addTail(testElement);
+    ListElement *listElement = newListElement(&smallJ, &largeJ); //pass address of stack var waterjugs - not a good idea
+
+
+    printf("%p\n", listElement -> next); //null is 0, prints as 0000000
+    printf("%i\n", listElement  -> waterJugL->fullness);
+    printf("%i\n", listElement  -> waterJugS->fullness);
+
+    printf("%i\n", listElement -> waterJugL->capacity);
+    printf("%i\n", listElement -> waterJugS->capacity);
+
+    return 0;
+    /*addTail(testElement);
     printf("%s\n", testElement .next);
-    printf("%s\n", testElement .waterJug);
+    printf("%s\n", testElement .waterJug1);
     addHead(testElement);
     printf("%s\n", testElement .next);
-    printf("%s\n", testElement .waterJug);*/
-
-
-    //return 0;
+    printf("%s\n", testElement .waterJug1);*/
 
 /*  int a = 5;
     add_a(a);
@@ -115,7 +178,7 @@ int main(void){
     //4, 4, 8 = Waterjug is so big because it is two ints. we also have to *return* it as a copy
 */
 
-    smallWJ.capacity = 3;
+ /*   smallWJ.capacity = 3;
     smallWJ.fullness = 0;
 
     largeWJ.capacity = 5;
@@ -124,11 +187,10 @@ int main(void){
     printf("%i\n", largeWJ.fullness);
     printf("%i\n", smallWJ.fullness);
 
-
     pour(&largeWJ, &smallWJ); //&take the address of this object - the address is a pointer
 
     printf("%i\n", largeWJ.fullness);
-    printf("%i\n", smallWJ.fullness);
+    printf("%i\n", smallWJ.fullness);*/
 
-    return 0;
+
 }
