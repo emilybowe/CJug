@@ -43,16 +43,15 @@ ListElement* addTail(struct ListElement *head, struct ListElement *obj) {
 WaterJug smallWJ;
 WaterJug largeWJ;
 
-ListElement* pour(ListElement *listElement, WaterJug *source, WaterJug *dest) {
-   WaterJug *waterJugNewSrc;
+ListElement* pour(ListElement *listElement, WaterJug *source, WaterJug *dest) { //5, 0
+    WaterJug *waterJugNewSrc = newWaterJug(0, 0);
    waterJugNewSrc ->capacity = source ->capacity;
-   WaterJug *waterJugNewDst;
+   WaterJug *waterJugNewDst = newWaterJug(0, 0);
    waterJugNewDst ->capacity = dest ->capacity;
-
-   waterJugNewDst->fullness = dest -> fullness + source ->fullness;
-   int overSpill = waterJugNewDst -> fullness - waterJugNewDst ->capacity ;
-   waterJugNewSrc ->fullness = overSpill;
-   waterJugNewDst -> fullness -= overSpill;
+   waterJugNewDst->fullness = dest -> fullness + source ->fullness; // newDest = 0 + 5 = 5
+   int overSpill = waterJugNewDst -> fullness - waterJugNewDst ->capacity; // newDest full 5 - newDest cap 3 = overSpl 2
+   waterJugNewSrc ->fullness = overSpill; // newSrc full = overSpl 2 = 2
+   waterJugNewDst -> fullness -= overSpill; // newDest full = full 5 - overSpl 2 = 3
    ListElement *newlistElement = newListElement(waterJugNewSrc, waterJugNewDst);
    return newlistElement;
 }
