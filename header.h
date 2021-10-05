@@ -9,7 +9,8 @@ typedef struct ListElement {
     WaterJug *waterJugS;
 }ListElement;
 
-struct ListElement* pour(struct ListElement *listElement, struct WaterJug *source, struct WaterJug *dest); //c needs to be told when it's a pointer
+struct ListElement* pourLargeIntoSmall(struct ListElement *listElement, struct WaterJug *source, struct WaterJug *dest); //c needs to be told when it's a pointer
+struct ListElement* pourSmallIntoLarge(struct ListElement *listElement, struct WaterJug *source, struct WaterJug *dest);
 struct ListElement* newListElement(struct WaterJug *waterJug1, struct WaterJug *waterJug2);
 ListElement* newListElement(WaterJug *waterJug1, WaterJug *waterJug2) ;
 WaterJug *newWaterJug(int cap, int full);
