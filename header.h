@@ -26,3 +26,4 @@ ListElement* generateNewStates(ListElement *currentState, int startingJug);
 bool checkGoalState();
 ListElement* setup(ListElement *currentState, int startingJug);
 ListElement* pour(ListElement *currentState, int startingJug);
+ListElement* generateStates();

@@ -1,10 +1,54 @@
 #include "header.h"
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
+#include <stdio.h>
 
-int SMALL_JUG = 3;
-int LARGE_JUG = 5;
 int GOAL_STATE = 4;
+
+int decideNextAction() {
+    return rand() % 6;
+}
+
+ListElement* addToList(ListElement *headElement, ListElement *currentElement) {
+    while (!checkGoalState()) {
+        ListElement *newState = generateStates(currentElement);
+        addTail(headElement, newState);
+        printf("New element WaterJugL %i\n", newState->waterJugL->fullness);
+        printf("New element WaterJugS %i\n", newState->waterJugS->fullness);
+    }
+}
+
+ListElement* generateStates(ListElement *currentElement) {
+    int decider = decideNextAction();
+    if(decider == 0) {
+        ListElement *newElement = fillSmall(currentElement);
+        return newElement;
+    } else if(decider == 1) {
+        ListElement *newElement = fillLarge(currentElement);
+        return newElement;
+    } else if(decider == 2) {
+        ListElement *newElement =
+                pourSmallIntoLarge(currentElement->waterJugS, currentElement->waterJugL);
+        return newElement;
+    } else if(decider == 3) {
+        ListElement *newElement =
+                pourLargeIntoSmall(currentElement->waterJugL, currentElement->waterJugS);
+        return newElement;
+    } else if(decider == 4) {
+        ListElement *newElement = emptySmall(currentElement);
+        return newElement;
+    } else if(decider == 5) {
+        ListElement *newElement = emptyLarge(currentElement);
+        return newElement;
+    } else {
+        return currentElement;
+    }
+}
+
+bool checkGoalState(ListElement *currentElement) {
+    currentElement->waterJugL->fullness = GOAL_STATE;
+}
 
 ListElement* newListElement(WaterJug *smallJ, WaterJug *largeJ) {
     ListElement *h = malloc(sizeof (struct ListElement));
@@ -44,9 +88,6 @@ ListElement* addTail(struct ListElement *head, struct ListElement *obj) {
     }
     return head;
 }
-
-WaterJug smallWJ;
-WaterJug largeWJ;
 
 void pourAIntoB(WaterJug *A, WaterJug *B, WaterJug **newA, WaterJug **newB) { // pointers to pointers; tell it it's an address
     *newA = newWaterJug(A->capacity, 0); //de-reference
