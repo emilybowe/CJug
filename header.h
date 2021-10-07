@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 typedef struct WaterJug {
     int capacity;
     int fullness;
@@ -9,8 +11,8 @@ typedef struct ListElement {
     WaterJug *waterJugS;
 }ListElement;
 
-struct ListElement* pourLargeIntoSmall(struct ListElement *listElement, struct WaterJug *source, struct WaterJug *dest); //c needs to be told when it's a pointer
-struct ListElement* pourSmallIntoLarge(struct ListElement *listElement, struct WaterJug *source, struct WaterJug *dest);
+struct ListElement* pourLargeIntoSmall(struct WaterJug *source, struct WaterJug *dest); //c needs to be told when it's a pointer
+struct ListElement* pourSmallIntoLarge(struct WaterJug *source, struct WaterJug *dest);
 struct ListElement* newListElement(struct WaterJug *waterJug1, struct WaterJug *waterJug2);
 ListElement* newListElement(WaterJug *waterJug1, WaterJug *waterJug2) ;
 WaterJug *newWaterJug(int cap, int full);
@@ -20,3 +22,7 @@ ListElement* fillSmall(ListElement *listElement);
 ListElement* fillLarge(ListElement *listElement);
 ListElement* emptyLarge(ListElement *listElement);
 ListElement* emptySmall(ListElement *listElement);
+ListElement* generateNewStates(ListElement *currentState, int startingJug);
+bool checkGoalState();
+ListElement* setup(ListElement *currentState, int startingJug);
+ListElement* pour(ListElement *currentState, int startingJug);
