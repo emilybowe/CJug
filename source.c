@@ -1,6 +1,5 @@
 #include "header.h"
 #include <stdlib.h>
-#include <stdbool.h>
 #include <time.h>
 #include <stdio.h>
 
@@ -10,14 +9,18 @@ int decideNextAction() {
     return rand() % 6;
 }
 
-ListElement* addToList(ListElement *headElement, ListElement *currentElement) {
-    while (!checkGoalState()) {
-        ListElement *newState = generateStates(currentElement);
-        addTail(headElement, newState);
+void addToListAndSolve(ListElement *headElement, ListElement *currentElement) {
+    while (!checkGoalState(currentElement)) { //if not not 0 - aka if 0 - this format for logical comparison still works (! means not 0)
+        ListElement *newState = generateStates(currentElement); //is 0 ('not' means 0)
+        printf("New element WaterJugL %i\n", currentElement->waterJugL->fullness);
+        printf("New element WaterJugS %i\n", currentElement->waterJugS->fullness);
+        addTail(currentElement, newState);
         printf("New element WaterJugL %i\n", newState->waterJugL->fullness);
         printf("New element WaterJugS %i\n", newState->waterJugS->fullness);
     }
 }
+
+//thing & thing.next
 
 ListElement* generateStates(ListElement *currentElement) {
     int decider = decideNextAction();
@@ -46,9 +49,14 @@ ListElement* generateStates(ListElement *currentElement) {
     }
 }
 
-bool checkGoalState(ListElement *currentElement) {
-    currentElement->waterJugL->fullness = GOAL_STATE;
+int checkGoalState(ListElement *currentElement) {
+    return currentElement->waterJugL->fullness == GOAL_STATE;
+    //logical comparison - if true will return not 0 (-1, 1 etc)
+    //if false will return 0
+    //bool is not a type in C
 }
+
+
 
 ListElement* newListElement(WaterJug *smallJ, WaterJug *largeJ) {
     ListElement *h = malloc(sizeof (struct ListElement));
@@ -75,18 +83,21 @@ ListElement* addHead(struct ListElement *head, struct ListElement *obj) {
     return head;
 }
 
-ListElement* addTail(struct ListElement *head, struct ListElement *obj) {
-    if(head == NULL) {
-        head = obj;
+ListElement* addTail(struct ListElement *current, struct ListElement *obj) {
+    if(current == NULL) {
+        return obj;
     } else {
         struct ListElement *thing;
-        thing = head;
-        while (thing ->next != NULL) {
+        thing = current;
+        while (thing->next != NULL) {
+            printf("%x %x\n", thing, thing->next);
+            //list element is pointing at itself
             thing = thing ->next;
+            //something wrong here
         }
         thing -> next = obj;
     }
-    return head;
+    return current;
 }
 
 void pourAIntoB(WaterJug *A, WaterJug *B, WaterJug **newA, WaterJug **newB) { // pointers to pointers; tell it it's an address
